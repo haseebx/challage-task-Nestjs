@@ -7,7 +7,7 @@ import StyledComponentsRegistry from "../../lib/registry";
 import CustomToastContainer from "@/components/core/toast/index.styles";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "E-Commernce",
+  title: "Challage Task",
 };
 
 export default function RootLayout({

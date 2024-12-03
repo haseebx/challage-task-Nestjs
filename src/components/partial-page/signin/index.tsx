@@ -15,6 +15,10 @@ import Email from "@/assets/img/svgs/email.svg";
 import Lock from "@/assets/img/svgs/lock.svg";
 import { TypographyAccount, MainContainer, BasicButton } from "./index.style";
 import { useRouter } from "nextjs-toploader/app";
+import { signInValidation } from "@/validations/signInValidation";
+import { signinService } from "@/service";
+import { ILoginRequest } from "@/service/service.types";
+import { toast } from "react-toastify";
 
 interface SignInFormValues {
   email: string;
@@ -30,22 +34,43 @@ const PartialSignInPage = () => {
       email: "",
       password: "",
     },
-    onSubmit: async (values: unknown) => {
+    onSubmit: async (values: ILoginRequest) => {
       console.log({ values });
+      if (values) {
+        handleLogin(values);
+      }
     },
-    validationSchema: null,
+    validationSchema: signInValidation,
     validateOnChange: false,
     validateOnBlur: false,
   });
 
-  // useEffect(() => {
-  //   formik.setFieldValue("passwordScore", passwordScore, false);
-  // }, [passwordScore]);
+  const handleLogin = async (value: ILoginRequest) => {
+    try {
+      const resp = await signinService(value);
+      if (resp) {
+        toast.success(resp.message);
+        localStorage.setItem("token", resp.token);
+        route.push("/home");
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
 
   return (
-    <Grid container justifyContent="center" alignItems="center" style={{ minHeight: "100vh" }}>
+    <Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      style={{ minHeight: "100vh" }}
+    >
       {/* Wrap the form content in the Paper component */}
-      <Paper elevation={3} sx={{ padding: "2rem", width: isLaptop ? "40%" : "20%" }}>
+      <Paper
+        elevation={3}
+        sx={{ padding: "2rem", width: isLaptop ? "40%" : "20%" }}
+      >
         <form
           onSubmit={formik.handleSubmit}
           style={{
@@ -56,9 +81,7 @@ const PartialSignInPage = () => {
             rowGap: isLaptop ? "1.5rem" : "2rem",
           }}
         >
-          <TypographyAccount >
-            Sign In to your Account
-          </TypographyAccount>
+          <TypographyAccount>Sign In to your Account</TypographyAccount>
           <Typography
             sx={{
               color: "#64748B",
@@ -95,13 +118,13 @@ const PartialSignInPage = () => {
               marginTop: isLaptop ? "-1rem" : "-1.5rem",
             }}
           >
-            <Typography sx={{ color: "#EA5C32", fontSize: "14px", fontWeight: "600" }}>
+            <Typography
+              sx={{ color: "#EA5C32", fontSize: "14px", fontWeight: "600" }}
+            >
               Forgot Password?
             </Typography>
           </div>
-          <BasicButton type="submit">
-            Sign In
-          </BasicButton>
+          <BasicButton type="submit">Sign In</BasicButton>
         </form>
       </Paper>
     </Grid>

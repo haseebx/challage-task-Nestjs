@@ -3,9 +3,9 @@ import { ToastContainer } from "react-toastify";
 import styled from "styled-components";
 
 export const StyledToastContainer = styled(ToastContainer)`
-  font-size: 18px;
+  font-size: 15px;
   @media (max-height: 800px) {
-    font-size: 2.15rem;
+    font-size: 14px;
   }
 `;
 export const Label = styled(Typography)`

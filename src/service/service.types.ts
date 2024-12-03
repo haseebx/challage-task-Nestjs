@@ -3,7 +3,7 @@ export interface IRequestBody {
 }
 
 export interface ILoginRequest {
-  emailOrPhone: string;
+  email: string;
   password: string;
 }
 
