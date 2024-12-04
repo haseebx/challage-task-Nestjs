@@ -20,3 +20,12 @@ export interface ICarRequest {
   maxPictures: number,
   pictures: string[]
 }
+
+export interface ICar {
+  carModel: string,
+  price: number,
+  phoneNumber: number,
+  city: string,
+  maxPictures: number,
+  pictures: string[]
+}
