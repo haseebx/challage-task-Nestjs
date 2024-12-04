@@ -8,17 +8,6 @@ export const TypographyAccount = styled(Typography)`
   color: black;
 `;
 
-export const MainContainer = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-`;
-
 export const BasicButton = styled(Button)`
   height: 44px;
   width: 100%;

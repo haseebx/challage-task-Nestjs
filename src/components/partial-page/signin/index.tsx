@@ -1,24 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "nextjs-toploader/app";
+import { useFormik } from "formik";
+import { toast } from "react-toastify";
 import {
-  Box,
-  Button,
-  Checkbox,
   Grid,
   Typography,
   useMediaQuery,
-  Paper, // Import Paper component
+  Paper, 
 } from "@mui/material";
-import { useFormik } from "formik";
 import CustomInputField from "@/components/core/inputField";
 import Email from "@/assets/img/svgs/email.svg";
 import Lock from "@/assets/img/svgs/lock.svg";
-import { TypographyAccount, MainContainer, BasicButton } from "./index.style";
-import { useRouter } from "nextjs-toploader/app";
 import { signInValidation } from "@/validations/signInValidation";
 import { signinService } from "@/service";
 import { ILoginRequest } from "@/service/service.types";
-import { toast } from "react-toastify";
+import { TypographyAccount, BasicButton } from "./index.style";
 
 interface SignInFormValues {
   email: string;
@@ -66,7 +63,6 @@ const PartialSignInPage = () => {
       alignItems="center"
       style={{ minHeight: "100vh" }}
     >
-      {/* Wrap the form content in the Paper component */}
       <Paper
         elevation={3}
         sx={{ padding: "2rem", width: isLaptop ? "40%" : "20%" }}
