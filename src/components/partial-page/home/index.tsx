@@ -16,18 +16,52 @@ const PartialHomePage = () => {
     maxPictures: 0,
     pictures: ['abc'],
   });
-  const [data, setData] = useState<ICar[]>([]); // Store fetched car data here
+  const [data, setData] = useState<ICar[]>([]);
   const [loading, setIsLoading] = useState(false);
+  const [phoneError, setPhoneError] = useState<string>('');
+  const [carModelError, setCarModelError] = useState<string>('');
+  const [maxPicturesError, setMaxPicturesError] = useState<string>('');
   const isLaptop = useMediaQuery("(max-width:1300px)");
 
   const handleInputChange = (field: keyof ICarRequest, value: any) => {
+    if (field === "phoneNumber") {
+      if (value.length > 11) {
+        setPhoneError("Phone number cannot be more than 11 digits.");
+      } else {
+        setPhoneError("");
+      }
+    }
+
+    if (field === "carModel") {
+      if (value.length < 3) {
+        setCarModelError("Car model must have at least 2 characters.");
+      } else {
+        setCarModelError("");
+      }
+    }
+
+    if (field === "maxPictures") {
+      if (value > 10) {
+        setMaxPicturesError("Max pictures cannot be more than 10.");
+      } else {
+        setMaxPicturesError("");
+      }
+    }
+
     setAddDetails((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
 
+  // Submit the form
   const handleSubmit = async () => {
+    // Check if any field has an error
+    if (phoneError || carModelError || maxPicturesError) {
+      toast.error("Please fix the errors before submitting.");
+      return;
+    }
+
     try {
       const resp = await addCarsService(addDetails);
       if (resp) {
@@ -41,7 +75,7 @@ const PartialHomePage = () => {
           pictures: ['abc'],
         });
         setIsLoading(true);
-        fetchData(); // Fetch data after submission
+        fetchData();
       }
     } catch (error: any) {
       console.log(error);
@@ -53,7 +87,7 @@ const PartialHomePage = () => {
     try {
       const resp = await getCarsService();
       if (resp && resp.data) {
-        setData(resp.data); // Assuming the response data is in `resp.data`
+        setData(resp.data);
       }
     } catch (error: any) {
       console.log(error);
@@ -61,14 +95,12 @@ const PartialHomePage = () => {
     }
   };
 
-
-useEffect(()=>{
-  fetchData()
-},[loading])
+  useEffect(() => {
+    fetchData();
+  }, [loading]);
 
   return (
     <Grid container justifyContent="center" marginTop={"5rem"} style={{ minHeight: "40vh", width: "100%" }}>
-      {/* Form Section */}
       <Paper elevation={3} sx={{ padding: "2rem", width: isLaptop ? "90%" : "30%" }}>
         <CustomFlexGrid container mt={3}>
           <Grid item xs={12} md={4}>
@@ -84,6 +116,11 @@ useEffect(()=>{
               value={addDetails.carModel}
               handleChange={(value) => handleInputChange("carModel", value)}
             />
+            {carModelError && (
+              <Typography variant="body2" color="error" sx={{ marginTop: "0.5rem" }}>
+                {carModelError}
+              </Typography>
+            )}
           </Grid>
         </CustomFlexGrid>
 
@@ -112,12 +149,17 @@ useEffect(()=>{
             <CustomInputField
               name="phoneNumber"
               placeholder="e.g 03xxx"
-              type="text"
+              type="number"
               background="rgba(255, 255, 255, 1)"
               height="44px"
               value={addDetails.phoneNumber === 0 ? "" : addDetails.phoneNumber}
               handleChange={(value) => handleInputChange("phoneNumber", value)}
             />
+            {phoneError && (
+              <Typography variant="body2" color="error" sx={{ marginTop: "0.5rem" }}>
+                {phoneError}
+              </Typography>
+            )}
           </Grid>
         </CustomFlexGrid>
 
@@ -140,7 +182,7 @@ useEffect(()=>{
 
         <CustomFlexGrid container mt={3}>
           <Grid item xs={12} md={4}>
-            <LabelTypo>maxPictures*</LabelTypo>
+            <LabelTypo>Max Pictures*</LabelTypo>
           </Grid>
           <Grid item xs={12} md={8}>
             <CustomInputField
@@ -152,6 +194,11 @@ useEffect(()=>{
               value={addDetails.maxPictures === 0 ? "" : addDetails.maxPictures}
               handleChange={(value) => handleInputChange("maxPictures", value)}
             />
+            {maxPicturesError && (
+              <Typography variant="body2" color="error" sx={{ marginTop: "0.5rem" }}>
+                {maxPicturesError}
+              </Typography>
+            )}
           </Grid>
         </CustomFlexGrid>
 
@@ -162,8 +209,7 @@ useEffect(()=>{
         </Box>
       </Paper>
 
-      {/* Displaying Cards for Fetched Cars */}
-      <Grid container spacing={2} justifyContent="center" sx={{ marginTop: "4rem" , marginInline:'10rem'}}>
+      <Grid container spacing={2} justifyContent="center" sx={{ marginTop: "4rem", marginInline: '10rem' }}>
         {data.length > 0 ? (
           data.map((car, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
