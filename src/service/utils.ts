@@ -6,8 +6,8 @@ import { IRequestBody } from './service.types';
 const getTokenHeader = () => {
   const extraHeaders: { authorization?: string } = {};
   let token = localStorage.getItem('token');
+  
   if (token) {
-    token = JSON.parse(token);
     extraHeaders['authorization'] = `Bearer ${token}`;
   }
 
@@ -16,7 +16,6 @@ const getTokenHeader = () => {
 
 export const postRequest = (url: string, body: IRequestBody | any, config?: AxiosRequestConfig) => {
   const extraHeaders = getTokenHeader();
-
   return axios.post(url, body, {
     ...config,
     headers: {

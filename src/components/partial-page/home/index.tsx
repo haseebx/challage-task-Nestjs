@@ -1,17 +1,57 @@
 "use client";
 import CustomInputField from "@/components/core/inputField";
 import { Box, Grid, Paper, useMediaQuery } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { BasicButton, CustomFlexGrid, LabelTypo } from "./index.style";
+import { ICarRequest } from "@/service/service.types";
+import { toast } from "react-toastify";
+import { addCarsService } from "@/service";
 
 const PartialHomePage = () => {
+  const [addDetails, setAddDetails] = useState<ICarRequest>({
+    carModel: "",
+    price: 0,
+    phoneNumber: 0,
+    city: "",
+    maxPictures: 0,
+    pictures: ['abc'],
+  });
   const isLaptop = useMediaQuery("(max-width:1300px) ");
+
+
+  const handleInputChange = (field: keyof ICarRequest, value: any) => {
+    setAddDetails((prev: any) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const resp = await addCarsService(addDetails)
+      if (resp) {
+        toast.success(resp.message);
+        setAddDetails({
+          carModel: "",
+          price: 0,
+          phoneNumber: 0,
+          city: "",
+          maxPictures: 0,
+          pictures: ['abc'],
+        })
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  }
+
   return (
     <Grid
       container
       justifyContent="center"
-      marginTop={'5rem'}
-      style={{ minHeight: "50vh", width: '100%' }}
+      marginTop={"5rem"}
+      style={{ minHeight: "50vh", width: "100%" }}
     >
       {/* Wrap the form content in the Paper component */}
       <Paper
@@ -29,8 +69,8 @@ const PartialHomePage = () => {
               type="text"
               background="rgba(255, 255, 255, 1)"
               height="44px"
-              value={""}
-            // handleChange={(value) => handleInputChange("name", value)}
+              value={addDetails.carModel}
+              handleChange={(value) => handleInputChange("carModel", value)}
             />
           </Grid>
         </CustomFlexGrid>
@@ -43,11 +83,11 @@ const PartialHomePage = () => {
             <CustomInputField
               name="price"
               placeholder="0"
-              type="text"
+              type="number"
               background="rgba(255, 255, 255, 1)"
               height="44px"
-              value={""}
-            // handleChange={(value) => handleInputChange("website_url", value)}
+              value={addDetails.price == 0 ? '' : addDetails.price}
+              handleChange={(value) => handleInputChange("price", value)}
             />
           </Grid>
         </CustomFlexGrid>
@@ -62,8 +102,8 @@ const PartialHomePage = () => {
               type="text"
               background="rgba(255, 255, 255, 1)"
               height="44px"
-              value={""}
-            // handleChange={(value) => handleInputChange("website_url", value)}
+              value={addDetails.phoneNumber === 0 ? '' : addDetails.phoneNumber}
+              handleChange={(value) => handleInputChange("phoneNumber", value)}
             />
           </Grid>
         </CustomFlexGrid>
@@ -79,8 +119,8 @@ const PartialHomePage = () => {
               type="text"
               background="rgba(255, 255, 255, 1)"
               height="44px"
-              value={""}
-            // handleChange={(value) => handleInputChange("website_url", value)}
+              value={addDetails.city}
+              handleChange={(value) => handleInputChange("city", value)}
             />
           </Grid>
         </CustomFlexGrid>
@@ -92,21 +132,20 @@ const PartialHomePage = () => {
             <CustomInputField
               name="maxPictures"
               placeholder="e.g 1-10"
-              type="text"
+              type="number"
               background="rgba(255, 255, 255, 1)"
               height="44px"
-              value={""}
-            // handleChange={(value) => handleInputChange("website_url", value)}
+              value={addDetails.maxPictures === 0 ? '' : addDetails.maxPictures}
+              handleChange={(value) => handleInputChange("maxPictures", value)}
             />
           </Grid>
         </CustomFlexGrid>
-        <Box sx={{ marginBlock: '5rem' }}>
-
-          <BasicButton>Submit</BasicButton>
+        <Box sx={{ marginBlock: "5rem" }}>
+          <BasicButton onClick={handleSubmit}>Submit</BasicButton>
         </Box>
       </Paper>
     </Grid>
-  )
+  );
 };
 
 export default PartialHomePage;
